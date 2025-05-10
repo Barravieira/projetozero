@@ -54,6 +54,21 @@ async function run() {
 
     if (remoteUpdated) {
       console.log('Como nós atualizamos o remote, vamos enviar agora os arquivos para o novo repositório');
+      
+      try {
+        console.log('➡️ git add .');
+        execSync('git add .', { stdio: 'inherit' });
+
+        console.log('➡️ git commit -m "[Automático] Primeiro commit"');
+        execSync('git commit -m "[Automático] Primeiro commit"', { stdio: 'inherit' });
+
+        console.log('➡️ git push origin main');
+        execSync('git push origin main', { stdio: 'inherit' });
+
+        console.log('✅ Projeto enviado com sucesso para o repositório!');
+      } catch (error) {
+        console.warn('⚠️ Não foi possível fazer o commit/push inicial automaticamente. Verifique se o repositório está vazio ou se há conflitos.');
+      }
     }
 
     console.log('\n✅✅✅ Pronto! O setup do projeto foi realizado. Você já pode abrir ele no editor e começar a trabalhar\n');
