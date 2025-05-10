@@ -1,3 +1,4 @@
 
 - Usamos tailwind 4
 - usamos firebase
+- usamos shadcn
