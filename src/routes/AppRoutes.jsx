@@ -9,6 +9,7 @@ import Login from '../pages/auth/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
 import Signup from '../pages/auth/Signup';
 import Recovey from '../pages/auth/Recovery';
+import Settings from '../pages/dashboard/Settings';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Dashboard /> },
+      { path: 'configuracoes', element: <Settings /> }
     ],
   },
 ]);

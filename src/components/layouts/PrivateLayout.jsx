@@ -26,7 +26,8 @@ export default function PrivateLayout() {
             <Text fw={700} fz="lg" mb="lg">
               { import.meta.env.VITE_APP_NAME }
             </Text>
-            <NavLink label="Dashboard" onClick={() => navigate('/app')} />
+            <NavLink label="Home" onClick={() => navigate('/app')} />
+            <NavLink label="Configurações" onClick={() => navigate('/app/configuracoes')} />
           </Box>
           <Group grow>
             <Button variant="light" onClick={handleLogout}>
