@@ -3,3 +3,97 @@ description:
 globs: 
 alwaysApply: true
 ---
+# Regras Gerais do Projeto
+
+Este projeto é um boilerplate React configurado para uso com Firebase, Mantine UI e Vite, com uma estrutura clara e padronizada para auxiliar no desenvolvimento por IA.
+
+## 📦 Stack e Versões
+
+- **React:** 19.1.0  
+- **Vite:** 6.3.5  
+- **Mantine:** 8.0.0 (**obrigatório — todos os componentes devem usar apenas essa versão**)  
+- **React Router:** 7.6.0  
+- **Firebase:** 11.7.1 (Auth, Firestore, Hosting)  
+- **Outras libs:** `@tabler/icons-react`, `recharts`, `dayjs`, `clsx`, `chalk`  
+
+## 🎨 Mantine
+
+Todo o projeto **deve usar exclusivamente componentes do Mantine v8**.  
+**Nunca** utilizar HTML cru, Material UI, Tailwind, Radix ou qualquer outra lib de UI.
+
+### Bibliotecas Mantine utilizadas:
+
+- `@mantine/core` → componentes base (Button, TextInput, etc)  
+- `@mantine/hooks` → hooks de utilidade  
+- `@mantine/form` → controle de formulários  
+- `@mantine/dates` → calendários e datas  
+- `@mantine/charts` → gráficos  
+- `@mantine/notifications` → mensagens visuais  
+- `@mantine/modals` → modais reutilizáveis  
+
+## 🧭 Roteamento
+
+- Utilizamos `react-router-dom` versão 7
+- As rotas são criadas com `createBrowserRouter`
+- Estrutura geral:
+  - `/` → páginas públicas
+  - `/app/auth` → autenticação
+  - `/app` → rotas privadas (dashboard)
+- O roteamento está em `AppRoutes.jsx`
+- Os layouts ficam em `src/components/layouts/`
+
+## 🔐 Firebase Auth
+
+- Utilizamos Firebase Auth com login por e-mail e senha
+- O hook `useAuth()` fornece: `user`, `login`, `logout`, `loading`
+- Todas as rotas privadas (`/app/*`) exigem login
+- A verificação é feita com `<RequireAuth />`
+
+## 🧾 Firestore
+
+- Utilizamos o Firestore no modo **document** (sem realtime)
+- Coleções são criadas automaticamente pelo código
+- Todas as operações usam o SDK oficial
+- As regras exigem que o usuário esteja autenticado: `request.auth != null`
+
+## 🌐 Firebase Hosting
+
+- A aplicação é publicada via Firebase Hosting
+- O comando usado é `firebase deploy --only hosting`
+- A pasta `dist/` gerada pelo build (`npm run build`) é usada como `public/`
+- O CLI `rodar servidor conectar` ajuda a configurar
+
+## 🚫 setup.js e CLI
+
+- O projeto possui um `setup.js` que automatiza tarefas iniciais.  
+  A **IA nunca deve executar esse script.**
+- Existe um CLI local chamado `rodar`, com comandos como:
+  - `rodar iniciar`
+  - `rodar atualizar`
+  - `rodar servidor conectar`
+  - `rodar servidor atualizar`
+- A **IA não deve rodar comandos**, mas pode sugerir ao usuário executá-los.
+
+## 🌍 Idioma
+
+- **A interface da aplicação deve ser toda em português**
+- **O código, arquivos, variáveis e comentários devem estar em inglês**
+
+## 📁 Estrutura de Pastas
+
+| Pasta        | Função                                                      |
+|--------------|-------------------------------------------------------------|
+| `assets`     | Imagens, ícones, logos, fontes e arquivos estáticos         |
+| `components` | Componentes reutilizáveis (ex: botões, layouts)             |
+| `hooks`      | Hooks customizados (ex: `useAuth`)                          |
+| `libs`       | Setup de bibliotecas externas (ex: Firebase)                |
+| `pages`      | Componentes de página (usados em rotas)                     |
+| `routes`     | Definições de roteamento                                    |
+| `services`   | Integrações com Firestore ou outras regras de negócio       |
+| `style`      | Estilos globais, arquivos CSS/postcss                       |
+| `utils`      | Funções auxiliares reutilizáveis                            |
+
+## 🧠 Gerenciamento de estado
+
+- O projeto **não utiliza nenhum store externo** (Redux, Zustand, etc)
+- **Toda a gestão de estado deve ser feita com Context API do React**

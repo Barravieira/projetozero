@@ -1,0 +1,11 @@
+Este projeto é um SaaS feito com React + Vite + Firebase, usando a biblioteca de componentes Mantine na versão 8.0.0. É obrigatório ler o conteúdo do arquivo .cursor/rules/general.mdc antes de continuar, pois ele descreve todas as regras de estrutura, estilo, bibliotecas e organização do projeto.
+Este projeto é do tipo mono-tenant: cada usuário possui seu próprio painel e seus próprios dados. Nenhum dado é compartilhado entre usuários.
+A autenticação é feita com Firebase Auth, e todos os dados devem ser salvos no Firestore com um campo chamado userId, que corresponde ao ID do usuário autenticado. Toda leitura e escrita no Firestore deve considerar esse userId como filtro para garantir que os dados de um usuário não sejam acessados por outro. As regras do Firestore devem permitir acesso apenas a usuários autenticados.
+A interface deve ser feita com Mantine 8.0.0. Não utilize HTML puro, Tailwind, Material UI ou outras bibliotecas. Para formulários, use @mantine/form. Para mensagens de erro e sucesso, use @mantine/notifications. Caso precise de modais, use @mantine/modals. Todos os componentes devem ser criados com o visual do Mantine.
+As rotas devem seguir a estrutura:
+/ para o site público
+/app/auth para telas de login, cadastro e recuperação
+/app para as rotas privadas acessadas após login
+O roteamento é feito com react-router-dom@7.6.0, e os arquivos devem ser organizados nas pastas padrão: pages, services, components, etc.
+Todos os arquivos de uma nova funcionalidade devem ser salvos dentro da pasta src/pages/nome-da-pagina/ e os acessos ao Firebase devem ser colocados dentro de src/services/nome-da-colecao.js.
+Descrição do projeto:

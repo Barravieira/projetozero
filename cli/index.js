@@ -5,6 +5,7 @@ import resetar from './commands/resetar.js';
 import iniciar from './commands/iniciar.js';
 import conectar from './commands/servidor/conectar.js';
 import servidorAtualizar from './commands/servidor/atualizar.js';
+import prompts from './commands/prompts.js';
 
 
 const program = new Command();
@@ -35,6 +36,11 @@ program
   .command('iniciar')
   .description('Inicia o servidor de desenvolvimento')
   .action(iniciar);
+
+program
+  .command('prompts')
+  .description('Exibe os prompts disponíveis para trabalhar com a IA')
+  .action(prompts);
 
 // Subcomando: servidor
 const servidor = new Command('servidor')

@@ -1,0 +1,12 @@
+Você está adicionando uma nova funcionalidade a um projeto multi-tenant feito com React + Vite + Firebase + Mantine v8.0.0. É obrigatório seguir exatamente as diretrizes do arquivo .cursor/rules/general.mdc.
+Neste projeto, todo usuário pertence a um tenant (empresa ou organização), e todos os dados devem conter o campo tenantId. O usuário só pode acessar dados do tenant ao qual ele pertence. A autenticação é feita com Firebase Auth, e os dados são armazenados no Firestore.
+As interfaces devem ser criadas usando somente Mantine v8. Use @mantine/form para formulários e @mantine/notifications para mensagens. Toda a estrutura deve manter o padrão visual e técnico do projeto atual.
+Para adicionar a nova funcionalidade, você deve:
+Criar os arquivos em src/pages/nome/
+Criar os serviços em src/services/nome.js
+Usar rotas privadas em /app
+Salvar todos os dados no Firestore com o campo tenantId
+Usar Context API para acessar o tenantId atual se necessário
+Reutilizar a estrutura, estilo e padrões do restante da aplicação
+Não altere estruturas principais. Não crie novas formas de organizar os dados. Apenas mantenha o padrão do que já foi feito.
+Descrição do projeto:
