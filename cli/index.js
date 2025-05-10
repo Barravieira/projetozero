@@ -28,7 +28,7 @@ program
 
 program
   .command('resetar')
-  .description('Descarta todas as alterações e volta ao último commit')
+  .description('Descarta todas as alterações e volta a como estava no seu último "rodar atualizar"')
   .action(resetar);
 
 

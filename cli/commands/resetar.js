@@ -9,7 +9,7 @@ export default async function resetar() {
   try {
     console.log(chalk.blue('\n➡️ Executando: git checkout -f'));
     execSync('git checkout -f', { stdio: 'inherit' });
-    console.log(chalk.green('\n✅ Tudo foi resetado com sucesso para o último commit.'));
+    console.log(chalk.green('\n✅ Tudo foi resetado com sucesso para o último comando de atualizar.'));
   } catch (err) {
     console.error(chalk.red('\n❌ Ocorreu um erro ao tentar resetar:'), err.message);
   }
