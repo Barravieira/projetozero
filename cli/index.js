@@ -2,6 +2,9 @@
 import { Command } from 'commander';
 import atualizar from './commands/atualizar.js';
 import resetar from './commands/resetar.js';
+import iniciar from './commands/iniciar.js';
+import conectar from './commands/servidor/conectar.js';
+import servidorAtualizar from './commands/servidor/atualizar.js';
 
 
 const program = new Command();
@@ -11,16 +14,13 @@ program
   .description('CLI para o boilerplate')
   .version('1.0.0');
 
-// Remove o comando e flag padrão de ajuda
+// --ajuda customizada
 program
   .addHelpCommand(false)
-  .helpOption(false);
-
-// Adiciona opção personalizada de ajuda
-program
+  .helpOption(false)
   .option('--ajuda', 'Exibe ajuda');
 
-// Comandos disponíveis
+// Comandos diretos
 program
   .command('atualizar')
   .description('Salva e envia o projeto para o Github')
@@ -28,11 +28,30 @@ program
 
 program
   .command('resetar')
-  .description('Descarta todas as alterações e volta a como estava no seu último "rodar atualizar"')
+  .description('Descarta todas as alterações e volta ao último commit')
   .action(resetar);
 
+program
+  .command('iniciar')
+  .description('Inicia o servidor de desenvolvimento')
+  .action(iniciar);
 
-// Parse e tratamento da flag --ajuda
+// Subcomando: servidor
+const servidor = new Command('servidor')
+  .description('Comandos relacionados ao servidor');
+
+servidor
+  .command('conectar')
+  .description('Conecta o projeto ao Firebase Hosting')
+  .action(conectar);
+
+servidor
+  .command('atualizar')
+  .description('Faz build e publica o projeto no Firebase Hosting')
+  .action(servidorAtualizar);
+
+program.addCommand(servidor);
+
 program.parse();
 
 const opts = program.opts();

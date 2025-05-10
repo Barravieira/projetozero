@@ -32,3 +32,4 @@
 - Alterar .env
 - Abrir no Cursor
 - Rodar prompt inicial
+- Rodar cli do firebase
