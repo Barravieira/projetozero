@@ -59,11 +59,11 @@ async function run() {
         console.log('➡️ git add .');
         execSync('git add .', { stdio: 'inherit' });
 
-        console.log('➡️ git commit -m "[Automático] Primeiro commit"');
-        execSync('git commit -m "[Automático] Primeiro commit"', { stdio: 'inherit' });
+        console.log('➡️ git commit --allow-empty -m "[Automático] Primeiro commit"');
+        execSync('git commit --allow-empty -m "[Automático] Primeiro commit"', { stdio: 'inherit' });
 
-        console.log('➡️ git push origin main');
-        execSync('git push origin main', { stdio: 'inherit' });
+        console.log('➡️ git push -u origin HEAD');
+        execSync('git push -u origin HEAD', { stdio: 'inherit' });
 
         console.log('✅ Projeto enviado com sucesso para o repositório!');
       } catch (error) {
