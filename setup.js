@@ -72,6 +72,10 @@ async function run() {
     }
 
     console.log('\n✅✅✅ Pronto! O setup do projeto foi realizado. Você já pode abrir ele no editor e começar a trabalhar\n');
+    console.log('\n--------------------\n');
+    console.log('\nO que você precisa fazer agora:\n');
+    console.log('\n 1. Abrir o arquivo .env e preencher os valores dos campos');
+    console.log('\n 2. Rodar o comando `npm run dev` para visualizar o projeto em localhost');
   } catch (err) {
     console.error('\n❌ Erro durante o setup:', err.message);
   }
