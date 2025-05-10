@@ -19,4 +19,28 @@ aos serviços externos
 
   1. Vá até o Firebase Console: https://console.firebase.google.com/
   2. Crie um novo projeto firebase
-  3. Inicialize uma aplicação.
+  3. Inicialize uma aplicação
+  4. Ative o Firebase Auth e o acesso via e-mail e senha
+  5. Personalize os modelos de e-mail como quiser, para deixar em português
+  6. Ative o Firebase Firestore e crie o banco de dados default.
+  7. No Firebase Firestore, na aba de regras, substitua a regra para:
+  ```bash
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      match /{document=**} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+  ```
+  8. Crie um novo repositório no Github. Salve seu endereço ssh.
+  9. No seu terminal, vá até `C:\projetos\`
+ 10. Clone este repositório com `git clone git@github.com:paulomoraesdev/carlos_projeto.git nome-do-projeto`
+ 11. Rode o comando `cd nome-do-projeto` para acessar a pasta do projeto
+ 12. Execute o comando `node setup.js` para fazer o setup inicial. Nesse passo você precisará do link ssh que salvou.
+ 13. Após finalizar o fluxo, rode `rodar servidor conectar` e passe pelo fluxo de autenticação com o firebase.
+ 14. Abra o editor de código e seja feliz =)
+ 15. Você pode interagir com `rodar prompts` para visualizar os prompts predefinidos para você conversar com a IA.
+ 
+ Os comandos que você pode rodar para te ajudar estão no CLI rodar. Para saber quais são, use `rodar --ajuda`
