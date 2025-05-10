@@ -1,6 +1,5 @@
 
-- Usamos tailwind 4
 - usamos firebase
-- usamos shadcn
+- usamos como biblioteca de componente o mantine.dev
 - usamos react-router-dom setup no AppRoutes
 - explicar do padrao de paths
