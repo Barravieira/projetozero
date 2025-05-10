@@ -1,11 +1,10 @@
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export default function RequireAuth({ children }) {
-  const isAuthenticated = true; // trocar para verificação real com Firebase depois
+  const { user, loading } = useAuth();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/site/app/auth/login" replace />;
-  }
+  if (loading) return null;
 
-  return children;
+  return user ? children : <Navigate to="/app/auth/login" replace />;
 }
