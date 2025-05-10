@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import atualizar from './commands/atualizar.js';
+import resetar from './commands/resetar.js';
+
 
 const program = new Command();
 
@@ -21,8 +23,14 @@ program
 // Comandos disponíveis
 program
   .command('atualizar')
-  .description('Salva e envia o projeto para o repositório remoto')
+  .description('Salva e envia o projeto para o Github')
   .action(atualizar);
+
+program
+  .command('resetar')
+  .description('Descarta todas as alterações e volta ao último commit')
+  .action(resetar);
+
 
 // Parse e tratamento da flag --ajuda
 program.parse();
