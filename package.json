@@ -1,5 +1,5 @@
 {
-  "name": "base",
+  "name": "projeto-base",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "bin": {
+    "rodar": "./cli/index.js"
+  },
   "dependencies": {
     "@mantine/charts": "^8.0.0",
     "@mantine/core": "^8.0.0",
@@ -17,6 +20,7 @@
     "@mantine/hooks": "^8.0.0",
     "@mantine/modals": "^8.0.0",
     "@mantine/notifications": "^8.0.0",
+    "chalk": "^5.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "commander": "^13.1.0",
