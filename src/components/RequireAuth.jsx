@@ -6,5 +6,5 @@ export default function RequireAuth({ children }) {
 
   if (loading) return null;
 
-  return user ? children : <Navigate to="/app/auth/login" replace />;
+  return user ? children : <Navigate to="/app/auth/entrar" replace />;
 }

@@ -3,3 +3,31 @@
 - usamos como biblioteca de componente o mantine.dev
 - usamos react-router-dom setup no AppRoutes
 - explicar do padrao de paths
+- explicar estrutura pastas
+- explicar logicas layouts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---- O que explicar
+
+- Baixar o projeto
+- Criar repositório
+- Fazer setup
+- Criar projeto no firebase
+- Ativar auth e provedores
+- Alterar .env
+- Abrir no Cursor
+- Rodar prompt inicial
