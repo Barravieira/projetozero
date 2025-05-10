@@ -28,6 +28,7 @@
 - Fazer setup
 - Criar projeto no firebase
 - Ativar auth e provedores
+- Explicar sobre os modelos de emails
 - Alterar .env
 - Abrir no Cursor
 - Rodar prompt inicial

@@ -1,5 +1,5 @@
 {
-  "name": "carlos_projetos",
+  "name": "base",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -19,6 +19,7 @@
     "@mantine/notifications": "^8.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "commander": "^13.1.0",
     "dayjs": "^1.11.13",
     "firebase": "^11.7.1",
     "lucide-react": "^0.509.0",

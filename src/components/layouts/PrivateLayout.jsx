@@ -23,9 +23,10 @@ export default function PrivateLayout() {
       <AppShell.Navbar p="md">
         <Stack justify="space-between" h="100%">
           <Box>
-            <Text fw={700} fz="lg" mb="lg">Meu App</Text>
+            <Text fw={700} fz="lg" mb="lg">
+              { import.meta.env.VITE_APP_NAME }
+            </Text>
             <NavLink label="Dashboard" onClick={() => navigate('/app')} />
-            {/* Adicione outros links aqui */}
           </Box>
           <Group grow>
             <Button variant="light" onClick={handleLogout}>
