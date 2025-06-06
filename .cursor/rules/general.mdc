@@ -56,6 +56,11 @@ Todo o projeto **deve usar exclusivamente componentes do Mantine v8**.
 - Todas as operações usam o SDK oficial
 - As regras exigem que o usuário esteja autenticado: `request.auth != null`
 
+## 🧾 Storage
+
+- Utilizamos o Storage do Firebase para upload.
+- Todo fluxo de upload de arquivos deve ser estruturado a partir dele.
+
 ## 🌐 Firebase Hosting
 
 - A aplicação é publicada via Firebase Hosting

@@ -54,7 +54,7 @@ async function run() {
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
     pkg.name = packageName;
     pkg.bin = {
-      rodar: './cli/index.js',
+        [packageName]: './cli/index.js',
     };
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
     console.log(`\n✅ Aplicado "${packageName}" ao name e bin do package.json`);
@@ -126,12 +126,12 @@ async function run() {
       console.error('\n❌ Falha ao instalar o firebase-tools:', err.message);
     }
 
-    console.log(`\n\nAgora vamos ativar o CLI. Você poderá usar o comando: rodar`);
+    console.log(`\n\nAgora vamos ativar o CLI. Você poderá usar o comando: ${packageName}`);
 
     try {
       console.log('\n➡️ npm link');
       execSync('npm link', { stdio: 'inherit' });
-      console.log(`\n✅ CLI ativado com sucesso. Agora você pode digitar 'rodar --help' no terminal`);
+      console.log(`\n✅ CLI ativado com sucesso. Agora você pode digitar '${packageName} --help' no terminal`);
     } catch (err) {
       console.error('\n❌ Falha ao instalar o CLI:', err.message);
     }

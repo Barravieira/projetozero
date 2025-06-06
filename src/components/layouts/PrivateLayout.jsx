@@ -27,6 +27,7 @@ export default function PrivateLayout() {
               { import.meta.env.VITE_APP_NAME }
             </Text>
             <NavLink label="Home" onClick={() => navigate('/app')} />
+            <NavLink label="Produtos" onClick={() => navigate('/app/produtos')} />
             <NavLink label="Configurações" onClick={() => navigate('/app/configuracoes')} />
           </Box>
           <Group grow>

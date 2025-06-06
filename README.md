@@ -34,13 +34,25 @@ aos serviços externos
     }
   }
   ```
-  8. Crie um novo repositório no Github. Salve seu endereço ssh.
-  9. No seu terminal, vá até `C:\projetos\`
- 10. Clone este repositório com `git clone git@github.com:paulomoraesdev/carlos_projeto.git nome-do-projeto`
- 11. Rode o comando `cd nome-do-projeto` para acessar a pasta do projeto
- 12. Execute o comando `node setup.js` para fazer o setup inicial. Nesse passo você precisará do link ssh que salvou.
- 13. Após finalizar o fluxo, rode `rodar servidor conectar` e passe pelo fluxo de autenticação com o firebase.
- 14. Abra o editor de código e seja feliz =)
- 15. Você pode interagir com `rodar prompts` para visualizar os prompts predefinidos para você conversar com a IA.
+  8. Ative o Storage, selecionando US-EAST. Para isso você precisará ativar o plano Blaze.
+  9. No Storage, na aba de regras, substitua a regra para:
+  ```bash
+  rules_version = '2';
+  service firebase.storage {
+    match /b/{bucket}/o {
+        match /{allPaths=**} {
+        allow read, write: if request.auth != null;
+        }
+    }
+    }
+  ```
+ 10. Crie um novo repositório no Github. Salve seu endereço ssh.
+ 11. No seu terminal, vá até `C:\projetos\`
+ 12. Clone este repositório com `git clone git@github.com:paulomoraesdev/carlos_projeto.git nome-do-projeto`
+ 13. Rode o comando `cd nome-do-projeto` para acessar a pasta do projeto
+ 14. Execute o comando `node setup.js` para fazer o setup inicial. Nesse passo você precisará do link ssh que salvou.
+ 15. Após finalizar o fluxo, rode `rodar servidor conectar` e passe pelo fluxo de autenticação com o firebase.
+ 16. Abra o editor de código e seja feliz =)
+ 17. Você pode interagir com `rodar prompts` para visualizar os prompts predefinidos para você conversar com a IA.
  
  Os comandos que você pode rodar para te ajudar estão no CLI rodar. Para saber quais são, use `rodar --ajuda`

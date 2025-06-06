@@ -9,9 +9,9 @@ import './styles/index.css'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MantineProvider>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+        <AuthProvider>
+            <AppRoutes />
+        </AuthProvider>
     </MantineProvider>
   </StrictMode>,
 )

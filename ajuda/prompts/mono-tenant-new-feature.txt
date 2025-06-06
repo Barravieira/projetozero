@@ -1,6 +1,7 @@
 Você está trabalhando em um projeto mono-tenant em React, Vite, Firebase e Mantine 8.0.0. É obrigatório seguir o arquivo .cursor/rules/general.mdc como referência para todas as decisões. Nada deve fugir da estrutura já existente no projeto.
 O projeto atual usa Firebase Auth e Firestore. Cada usuário só pode acessar seus próprios dados. Todos os documentos salvos no Firestore possuem um campo chamado userId, que identifica o dono daquele dado.
 A interface usa exclusivamente componentes do Mantine 8.0.0. Os formulários são feitos com @mantine/form e as mensagens de sucesso e erro com @mantine/notifications.
+Nossa estrutura de upload é toda sincronizada com o Firebase Storage. Devemos sempre utilizar esse serviço quando precisarmos fazer o upload de algo.
 Para adicionar uma nova funcionalidade, você deve:
 Criar as páginas dentro da pasta src/pages/nome-da-funcionalidade/
 Criar o serviço Firebase dentro de src/services/nome-da-funcionalidade.js

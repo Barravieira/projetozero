@@ -2,6 +2,7 @@ Este projeto é um SaaS com suporte a múltiplos tenants (multi-tenant), criado 
 Neste modelo, cada usuário pertence a uma organização ou empresa (um tenant). Após o cadastro, o usuário deve ser vinculado a um tenant no Firestore. Todos os dados do sistema devem conter o campo tenantId, que indica a qual organização aquele dado pertence. Nenhum dado deve ser acessível por usuários de outros tenants.
 As regras de segurança do Firestore devem garantir que os usuários só possam acessar dados com tenantId correspondente ao seu. Os dados podem ser organizados em subcoleções do tipo /tenants/{tenantId}/colecao ou em coleções comuns com o campo tenantId.
 A interface deve ser feita exclusivamente com Mantine 8.0.0. Use @mantine/core, @mantine/form, @mantine/notifications e @mantine/modals. Não use bibliotecas externas de UI nem HTML puro.
+Nossa estrutura de upload é toda sincronizada com o Firebase Storage. Devemos sempre utilizar esse serviço quando precisarmos fazer o upload de algo.
 O roteamento deve seguir a estrutura:
 /app/auth para login, cadastro e onboarding
 /app para rotas privadas e o painel principal

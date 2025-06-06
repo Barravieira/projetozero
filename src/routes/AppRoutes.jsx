@@ -6,10 +6,12 @@ import RequireAuth from '../components/RequireAuth';
 
 import Home from '../pages/site/Home';
 import Login from '../pages/auth/Login';
-import Dashboard from '../pages/dashboard/Dashboard';
+import Dashboard from '../pages/private/Dashboard';
 import Signup from '../pages/auth/Signup';
 import Recovey from '../pages/auth/Recovery';
-import Settings from '../pages/dashboard/Settings';
+import Settings from '../pages/private/Settings';
+import ProductList from '../pages/private/products/ProductList';
+import ProductForm from '../pages/private/products/ProductForm';
 
 const router = createBrowserRouter([
   {
@@ -36,8 +38,11 @@ const router = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: 'configuracoes', element: <Settings /> }
+        { index: true, element: <Dashboard /> },
+        { path: 'produtos', element: <ProductList /> },
+        { path: 'produtos/novo', element: <ProductForm /> },
+        { path: 'produtos/editar/:id', element: <ProductForm /> },
+        { path: 'configuracoes', element: <Settings /> }
     ],
   },
 ]);
