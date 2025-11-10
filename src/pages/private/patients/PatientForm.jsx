@@ -4,7 +4,11 @@ import {
   Stack,
   Group,
   Loader,
+  Paper,
+  Title,
+  ActionIcon,
 } from '@mantine/core';
+import { IconList } from '@tabler/icons-react';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { useState, useEffect } from 'react';
@@ -19,6 +23,7 @@ import {
   getDoc,
 } from 'firebase/firestore';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { notifications } from '@mantine/notifications';
 import dayjs from 'dayjs';
 
 export default function PatientForm() {
@@ -100,18 +105,31 @@ export default function PatientForm() {
       if (patientId) {
         const refDoc = doc(db, 'patients', patientId);
         await updateDoc(refDoc, patientData);
+        notifications.show({
+          title: 'Sucesso!',
+          message: 'Paciente atualizado com sucesso.',
+          color: 'green',
+        });
+        navigate('/app/pacientes/lista');
       } else {
         await addDoc(collection(db, 'patients'), {
           ...patientData,
           userId: user.uid,
           createdAt: Timestamp.now(),
         });
+        notifications.show({
+          title: 'Sucesso!',
+          message: 'Paciente cadastrado com sucesso.',
+          color: 'green',
+        });
+        form.reset();
       }
-
-      form.reset();
-      navigate('/app/pacientes');
     } catch (err) {
-      alert('Erro ao salvar paciente: ' + err.message);
+      notifications.show({
+        title: 'Erro',
+        message: 'Erro ao salvar paciente: ' + err.message,
+        color: 'red',
+      });
     }
 
     setLoading(false);
@@ -121,53 +139,85 @@ export default function PatientForm() {
     return <Loader />;
   }
 
+  const isEditMode = !!patientId;
+
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <Paper withBorder p={{ base: 'md', sm: 'xl' }} radius="md" maw={{ base: '100%', sm: 600 }} mx="auto" w="100%">
       <Stack gap="md">
-        <TextInput
-          label="Nome"
-          placeholder="Nome completo do paciente"
-          required
-          {...form.getInputProps('name')}
-        />
-
-        <TextInput
-          label="Telefone"
-          placeholder="(00) 00000-0000"
-          required
-          {...form.getInputProps('phone')}
-        />
-
-        <DateInput
-          label="Data de Nascimento"
-          placeholder="Selecione a data"
-          valueFormat="DD/MM/YYYY"
-          maxDate={new Date()}
-          {...form.getInputProps('birthDate')}
-        />
-
-        <TextInput
-          label="Nome do Responsável"
-          placeholder="Nome do responsável (opcional)"
-          {...form.getInputProps('responsibleName')}
-        />
-
-        <TextInput
-          label="Nome da Escola"
-          placeholder="Nome da escola (opcional)"
-          {...form.getInputProps('schoolName')}
-        />
-
-        <Group justify="flex-end">
-          <Button variant="outline" onClick={() => navigate('/app/pacientes')}>
-            Cancelar
-          </Button>
-          <Button type="submit" loading={loading}>
-            {patientId ? 'Atualizar' : 'Salvar Paciente'}
-          </Button>
+        <Group justify="space-between" align="center">
+          <Title order={2}>
+            {isEditMode ? 'Editar Paciente' : 'Cadastrar Paciente'}
+          </Title>
+          {!isEditMode && (
+            <ActionIcon
+              variant="light"
+              size="lg"
+              onClick={() => navigate('/app/pacientes/lista')}
+              title="Ver lista de pacientes"
+            >
+              <IconList size={20} />
+            </ActionIcon>
+          )}
         </Group>
+
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack gap="md">
+            <TextInput
+              label="Nome"
+              placeholder="Nome completo do paciente"
+              required
+              size="md"
+              {...form.getInputProps('name')}
+            />
+
+            <TextInput
+              label="Telefone"
+              placeholder="(00) 00000-0000"
+              required
+              size="md"
+              {...form.getInputProps('phone')}
+            />
+
+            <DateInput
+              label="Data de Nascimento"
+              placeholder="Selecione a data"
+              valueFormat="DD/MM/YYYY"
+              maxDate={new Date()}
+              size="md"
+              {...form.getInputProps('birthDate')}
+            />
+
+            <TextInput
+              label="Nome do Responsável"
+              placeholder="Nome do responsável (opcional)"
+              size="md"
+              {...form.getInputProps('responsibleName')}
+            />
+
+            <TextInput
+              label="Nome da Escola"
+              placeholder="Nome da escola (opcional)"
+              size="md"
+              {...form.getInputProps('schoolName')}
+            />
+
+            <Group justify="flex-end" gap="sm" mt="md">
+              {isEditMode && (
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/app/pacientes/lista')}
+                >
+                  Cancelar
+                </Button>
+              )}
+              <Button type="submit" loading={loading} size="md">
+                {isEditMode ? 'Atualizar' : 'Salvar Paciente'}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
       </Stack>
-    </form>
+    </Paper>
   );
 }
 

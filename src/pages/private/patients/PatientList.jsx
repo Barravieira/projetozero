@@ -9,9 +9,11 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { useAuth } from '../../../hooks/useAuth';
-import { Button, Table, Title, Stack, Group, Text, Modal } from '@mantine/core';
+import { Button, Table, Title, Stack, Group, Text, Modal, Card, ActionIcon } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 
 export default function PatientList() {
@@ -20,6 +22,7 @@ export default function PatientList() {
   const navigate = useNavigate();
   const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
   const [patientToDelete, setPatientToDelete] = useState(null);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const fetchPatients = async () => {
     if (!user) return;
@@ -77,8 +80,8 @@ export default function PatientList() {
   return (
     <Stack gap="md">
       <Group justify="space-between" wrap="wrap">
-        <Title order={2}>Pacientes</Title>
-        <Button onClick={() => navigate('/app/pacientes/novo')}>
+        <Title order={2}>Lista de Pacientes</Title>
+        <Button onClick={() => navigate('/app/pacientes')}>
           Novo paciente
         </Button>
       </Group>
@@ -87,6 +90,58 @@ export default function PatientList() {
         <Text c="dimmed" ta="center" py="xl">
           Nenhum paciente cadastrado ainda.
         </Text>
+      ) : isMobile ? (
+        <Stack gap="md">
+          {patients.map((patient) => (
+            <Card key={patient.id} withBorder padding="md" radius="md">
+              <Stack gap="xs">
+                <Group justify="space-between" align="flex-start">
+                  <div style={{ flex: 1 }}>
+                    <Text fw={600} size="lg">
+                      {patient.name}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                      {patient.phone}
+                    </Text>
+                  </div>
+                  <Group gap="xs">
+                    <ActionIcon
+                      variant="light"
+                      color="blue"
+                      onClick={() => handleEdit(patient)}
+                      title="Editar"
+                    >
+                      <IconEdit size={18} />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="light"
+                      color="red"
+                      onClick={() => handleDeleteClick(patient)}
+                      title="Excluir"
+                    >
+                      <IconTrash size={18} />
+                    </ActionIcon>
+                  </Group>
+                </Group>
+                {formatDate(patient.birthDate) !== '-' && (
+                  <Text size="sm">
+                    <strong>Data de Nascimento:</strong> {formatDate(patient.birthDate)}
+                  </Text>
+                )}
+                {patient.responsibleName && (
+                  <Text size="sm">
+                    <strong>Responsável:</strong> {patient.responsibleName}
+                  </Text>
+                )}
+                {patient.schoolName && (
+                  <Text size="sm">
+                    <strong>Escola:</strong> {patient.schoolName}
+                  </Text>
+                )}
+              </Stack>
+            </Card>
+          ))}
+        </Stack>
       ) : (
         <Table.ScrollContainer minWidth={600}>
           <Table highlightOnHover withTableBorder>

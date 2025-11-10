@@ -44,8 +44,8 @@ const router = createBrowserRouter([
         { path: 'produtos', element: <ProductList /> },
         { path: 'produtos/novo', element: <ProductForm /> },
         { path: 'produtos/editar/:id', element: <ProductForm /> },
-        { path: 'pacientes', element: <PatientList /> },
-        { path: 'pacientes/novo', element: <PatientForm /> },
+        { path: 'pacientes', element: <PatientForm /> },
+        { path: 'pacientes/lista', element: <PatientList /> },
         { path: 'pacientes/editar/:id', element: <PatientForm /> },
         { path: 'configuracoes', element: <Settings /> }
     ],
