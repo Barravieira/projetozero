@@ -28,6 +28,7 @@ export default function PrivateLayout() {
             </Text>
             <NavLink label="Home" onClick={() => navigate('/app')} />
             <NavLink label="Produtos" onClick={() => navigate('/app/produtos')} />
+            <NavLink label="Pacientes" onClick={() => navigate('/app/pacientes')} />
             <NavLink label="Configurações" onClick={() => navigate('/app/configuracoes')} />
           </Box>
           <Group grow>

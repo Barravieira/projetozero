@@ -12,6 +12,8 @@ import Recovey from '../pages/auth/Recovery';
 import Settings from '../pages/private/Settings';
 import ProductList from '../pages/private/products/ProductList';
 import ProductForm from '../pages/private/products/ProductForm';
+import PatientList from '../pages/private/patients/PatientList';
+import PatientForm from '../pages/private/patients/PatientForm';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +44,9 @@ const router = createBrowserRouter([
         { path: 'produtos', element: <ProductList /> },
         { path: 'produtos/novo', element: <ProductForm /> },
         { path: 'produtos/editar/:id', element: <ProductForm /> },
+        { path: 'pacientes', element: <PatientList /> },
+        { path: 'pacientes/novo', element: <PatientForm /> },
+        { path: 'pacientes/editar/:id', element: <PatientForm /> },
         { path: 'configuracoes', element: <Settings /> }
     ],
   },
