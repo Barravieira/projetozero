@@ -1,5 +1,5 @@
 {
-  "name": "projeto-base",
+  "name": "projetozero",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "bin": {
-    "rodar": "./cli/index.js"
+    "projetozero": "./cli/index.js"
   },
   "dependencies": {
     "@mantine/charts": "^8.0.0",
