@@ -7,9 +7,10 @@ import {
   Paper,
   Title,
   ActionIcon,
+  NumberInput,
+  Text,
 } from '@mantine/core';
 import { IconList } from '@tabler/icons-react';
-import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
@@ -24,7 +25,6 @@ import {
 } from 'firebase/firestore';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
-import dayjs from 'dayjs';
 
 export default function PatientForm() {
   const { user } = useAuth();
@@ -41,22 +41,53 @@ export default function PatientForm() {
     initialValues: {
       name: '',
       phone: '',
-      birthDate: null,
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
       responsibleName: '',
       schoolName: '',
     },
     validate: {
       name: (value) => (value.trim().length > 0 ? null : 'Nome é obrigatório'),
       phone: (value) => (value.trim().length > 0 ? null : 'Telefone é obrigatório'),
+      birthDay: (value) => {
+        if (!value) return null; // opcional
+        const day = parseInt(value);
+        return (day >= 1 && day <= 31) ? null : 'Dia inválido (1-31)';
+      },
+      birthMonth: (value) => {
+        if (!value) return null; // opcional
+        const month = parseInt(value);
+        return (month >= 1 && month <= 12) ? null : 'Mês inválido (1-12)';
+      },
+      birthYear: (value) => {
+        if (!value) return null; // opcional
+        const year = parseInt(value);
+        const currentYear = new Date().getFullYear();
+        return (year >= 1900 && year <= currentYear) ? null : `Ano inválido (1900-${currentYear})`;
+      },
     },
   });
 
   useEffect(() => {
     if (initialData) {
+      let day = '';
+      let month = '';
+      let year = '';
+      
+      if (initialData.birthDate?.toDate) {
+        const date = initialData.birthDate.toDate();
+        day = date.getDate().toString();
+        month = (date.getMonth() + 1).toString();
+        year = date.getFullYear().toString();
+      }
+      
       form.setValues({
         name: initialData.name || '',
         phone: initialData.phone || '',
-        birthDate: initialData.birthDate?.toDate ? initialData.birthDate.toDate() : null,
+        birthDay: day,
+        birthMonth: month,
+        birthYear: year,
         responsibleName: initialData.responsibleName || '',
         schoolName: initialData.schoolName || '',
       });
@@ -93,10 +124,31 @@ export default function PatientForm() {
     setLoading(true);
 
     try {
+      let birthDate = null;
+      if (values.birthDay && values.birthMonth && values.birthYear) {
+        const day = parseInt(values.birthDay);
+        const month = parseInt(values.birthMonth) - 1; // JavaScript months are 0-indexed
+        const year = parseInt(values.birthYear);
+        
+        // Validate date
+        const date = new Date(year, month, day);
+        if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) {
+          birthDate = Timestamp.fromDate(date);
+        } else {
+          notifications.show({
+            title: 'Erro',
+            message: 'Data de nascimento inválida. Verifique os valores.',
+            color: 'red',
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       const patientData = {
         name: values.name.trim(),
         phone: values.phone.trim(),
-        birthDate: values.birthDate ? Timestamp.fromDate(values.birthDate) : null,
+        birthDate,
         responsibleName: values.responsibleName.trim() || null,
         schoolName: values.schoolName.trim() || null,
         updatedAt: Timestamp.now(),
@@ -178,14 +230,37 @@ export default function PatientForm() {
               {...form.getInputProps('phone')}
             />
 
-            <DateInput
-              label="Data de Nascimento"
-              placeholder="Selecione a data"
-              valueFormat="DD/MM/YYYY"
-              maxDate={new Date()}
-              size="md"
-              {...form.getInputProps('birthDate')}
-            />
+            <div>
+              <Text size="sm" fw={500} mb={4}>
+                Data de Nascimento (opcional)
+              </Text>
+              <Group gap="xs" grow>
+                <NumberInput
+                  placeholder="Dia"
+                  min={1}
+                  max={31}
+                  size="md"
+                  hideControls
+                  {...form.getInputProps('birthDay')}
+                />
+                <NumberInput
+                  placeholder="Mês"
+                  min={1}
+                  max={12}
+                  size="md"
+                  hideControls
+                  {...form.getInputProps('birthMonth')}
+                />
+                <NumberInput
+                  placeholder="Ano"
+                  min={1900}
+                  max={new Date().getFullYear()}
+                  size="md"
+                  hideControls
+                  {...form.getInputProps('birthYear')}
+                />
+              </Group>
+            </div>
 
             <TextInput
               label="Nome do Responsável"
