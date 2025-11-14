@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { Calendar, DateInput, TimeInput } from '@mantine/dates';
 import { BarChart, LineChart } from '@mantine/charts';
-import { IconCalendar, IconChartBar, IconPlus, IconEdit, IconTrash, IconUser } from '@tabler/icons-react';
+import { IconCalendar, IconChartBar, IconPlus, IconEdit, IconTrash, IconUser, IconSearch } from '@tabler/icons-react';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../libs/firebase';
 import {
@@ -43,13 +43,20 @@ dayjs.locale('pt-br');
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  // Inicializar com a data atual, garantindo que seja sempre hoje
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    // Normalizar para meia-noite para evitar problemas de timezone
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
   const [viewMode, setViewMode] = useState('daily');
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const form = useForm({
     initialValues: {
@@ -76,6 +83,19 @@ export default function Dashboard() {
       fetchAppointments();
     }
   }, [user, selectedDate, viewMode]);
+
+  // Garantir que ao montar o componente, a data seja sempre a data atual
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = dayjs(today).format('YYYY-MM-DD');
+    const selectedStr = dayjs(selectedDate).format('YYYY-MM-DD');
+    // Se a data selecionada não for hoje, atualizar para hoje
+    if (todayStr !== selectedStr) {
+      setSelectedDate(today);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Executar apenas uma vez na montagem
 
   const fetchData = async () => {
     if (!user) return;
@@ -150,13 +170,22 @@ export default function Dashboard() {
           });
           return isSame;
         });
-      } else {
+      } else if (viewMode === 'weekly') {
         const startOfWeek = dayjs(selectedDate).startOf('week');
         const endOfWeek = dayjs(selectedDate).endOf('week');
         filteredAppointments = allAppointments.filter((apt) => {
           if (!apt.date?.toDate) return false;
           const aptDate = dayjs(apt.date.toDate());
           return aptDate.isAfter(startOfWeek.subtract(1, 'day')) && aptDate.isBefore(endOfWeek.add(1, 'day'));
+        });
+      } else if (viewMode === 'biweekly') {
+        // Quinzena: 15 dias a partir da data selecionada
+        const startOfBiweek = dayjs(selectedDate).startOf('day');
+        const endOfBiweek = dayjs(selectedDate).add(14, 'days').endOf('day');
+        filteredAppointments = allAppointments.filter((apt) => {
+          if (!apt.date?.toDate) return false;
+          const aptDate = dayjs(apt.date.toDate()).startOf('day');
+          return aptDate.isAfter(startOfBiweek.subtract(1, 'day')) && aptDate.isBefore(endOfBiweek.add(1, 'day'));
         });
       }
 
@@ -317,6 +346,17 @@ export default function Dashboard() {
     return patients.find((p) => p.id === patientId)?.name || 'Paciente não encontrado';
   };
 
+  // Filtrar agendamentos pelo nome do paciente
+  const filterAppointmentsBySearch = (appointmentsList) => {
+    if (!searchTerm.trim()) return appointmentsList;
+    
+    const searchLower = searchTerm.toLowerCase().trim();
+    return appointmentsList.filter((apt) => {
+      const patientName = getPatientName(apt.patientId).toLowerCase();
+      return patientName.includes(searchLower);
+    });
+  };
+
   const formatTime = (timestamp) => {
     if (!timestamp?.toDate) return '';
     return dayjs(timestamp.toDate()).format('HH:mm');
@@ -391,21 +431,38 @@ export default function Dashboard() {
 
         <Tabs.Panel value="agenda" pt="md">
           <Stack gap="md">
-            <Group gap="md" wrap="wrap">
-              <Button
-                variant={viewMode === 'daily' ? 'filled' : 'outline'}
-                onClick={() => setViewMode('daily')}
+            <Group gap="md" wrap="wrap" justify="space-between">
+              <Group gap="md" wrap="wrap">
+                <Button
+                  variant={viewMode === 'daily' ? 'filled' : 'outline'}
+                  onClick={() => setViewMode('daily')}
+                  size="sm"
+                >
+                  Agenda Diária
+                </Button>
+                <Button
+                  variant={viewMode === 'weekly' ? 'filled' : 'outline'}
+                  onClick={() => setViewMode('weekly')}
+                  size="sm"
+                >
+                  Agenda Semanal
+                </Button>
+                <Button
+                  variant={viewMode === 'biweekly' ? 'filled' : 'outline'}
+                  onClick={() => setViewMode('biweekly')}
+                  size="sm"
+                >
+                  Agenda Quinzenal
+                </Button>
+              </Group>
+              <TextInput
+                placeholder="Buscar por nome do paciente..."
+                leftSection={<IconSearch size={16} />}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ flex: 1, maxWidth: 300 }}
                 size="sm"
-              >
-                Agenda Diária
-              </Button>
-              <Button
-                variant={viewMode === 'weekly' ? 'filled' : 'outline'}
-                onClick={() => setViewMode('weekly')}
-                size="sm"
-              >
-                Agenda Semanal
-              </Button>
+              />
             </Group>
 
             {viewMode === 'daily' ? (
@@ -426,13 +483,15 @@ export default function Dashboard() {
                       {dayjs(selectedDate).format('dddd, DD [de] MMMM [de] YYYY')}
                     </Title>
                     
-                    {appointments.length === 0 ? (
-                      <Text c="dimmed" ta="center" py="xl">
-                        Nenhum agendamento para este dia.
-                      </Text>
-                    ) : (
-                      <Stack gap="sm">
-                        {appointments.map((apt) => (
+                    {(() => {
+                      const filteredAppointments = filterAppointmentsBySearch(appointments);
+                      return filteredAppointments.length === 0 ? (
+                        <Text c="dimmed" ta="center" py="xl">
+                          {searchTerm ? 'Nenhum agendamento encontrado para este paciente.' : 'Nenhum agendamento para este dia.'}
+                        </Text>
+                      ) : (
+                        <Stack gap="sm">
+                          {filteredAppointments.map((apt) => (
                           <Card key={apt.id} withBorder padding="md" radius="md">
                             <Group justify="space-between" align="flex-start">
                               <div style={{ flex: 1 }}>
@@ -476,31 +535,34 @@ export default function Dashboard() {
                               </Group>
                             </Group>
                           </Card>
-                        ))}
-                      </Stack>
-                    )}
+                          ))}
+                        </Stack>
+                      );
+                    })()}
                   </Paper>
                 </Grid.Col>
               </Grid>
-            ) : (
+            ) : viewMode === 'weekly' ? (
               <Paper withBorder p="md" radius="md">
                 <Title order={3} mb="md">
                   Semana de {dayjs(selectedDate).startOf('week').format('DD/MM')} a{' '}
                   {dayjs(selectedDate).endOf('week').format('DD/MM/YYYY')}
                 </Title>
                 
-                {appointments.length === 0 ? (
-                  <Text c="dimmed" ta="center" py="xl">
-                    Nenhum agendamento para esta semana.
-                  </Text>
-                ) : (
-                  <Stack gap="md">
-                    {Array.from({ length: 7 }).map((_, index) => {
-                      const day = dayjs(selectedDate).startOf('week').add(index, 'days');
-                      const dayAppointments = appointments.filter((apt) => {
-                        if (!apt.date?.toDate) return false;
-                        return dayjs(apt.date.toDate()).isSame(day, 'day');
-                      });
+                {(() => {
+                  const filteredAppointments = filterAppointmentsBySearch(appointments);
+                  return filteredAppointments.length === 0 ? (
+                    <Text c="dimmed" ta="center" py="xl">
+                      {searchTerm ? 'Nenhum agendamento encontrado para este paciente.' : 'Nenhum agendamento para esta semana.'}
+                    </Text>
+                  ) : (
+                    <Stack gap="md">
+                      {Array.from({ length: 7 }).map((_, index) => {
+                        const day = dayjs(selectedDate).startOf('week').add(index, 'days');
+                        const dayAppointments = filteredAppointments.filter((apt) => {
+                          if (!apt.date?.toDate) return false;
+                          return dayjs(apt.date.toDate()).isSame(day, 'day');
+                        });
 
                       if (dayAppointments.length === 0) return null;
 
@@ -557,9 +619,92 @@ export default function Dashboard() {
                           </Stack>
                         </Card>
                       );
-                    })}
-                  </Stack>
-                )}
+                      })}
+                    </Stack>
+                  );
+                })()}
+              </Paper>
+            ) : (
+              <Paper withBorder p="md" radius="md">
+                <Title order={3} mb="md">
+                  Quinzena de {dayjs(selectedDate).format('DD/MM/YYYY')} a{' '}
+                  {dayjs(selectedDate).add(14, 'days').format('DD/MM/YYYY')}
+                </Title>
+                
+                {(() => {
+                  const filteredAppointments = filterAppointmentsBySearch(appointments);
+                  return filteredAppointments.length === 0 ? (
+                    <Text c="dimmed" ta="center" py="xl">
+                      {searchTerm ? 'Nenhum agendamento encontrado para este paciente.' : 'Nenhum agendamento para esta quinzena.'}
+                    </Text>
+                  ) : (
+                    <Stack gap="md">
+                      {Array.from({ length: 15 }).map((_, index) => {
+                        const day = dayjs(selectedDate).add(index, 'days');
+                        const dayAppointments = filteredAppointments.filter((apt) => {
+                          if (!apt.date?.toDate) return false;
+                          return dayjs(apt.date.toDate()).isSame(day, 'day');
+                        });
+
+                      if (dayAppointments.length === 0) return null;
+
+                      return (
+                        <Card key={index} withBorder padding="md" radius="md">
+                          <Text fw={600} size="lg" mb="sm">
+                            {day.format('dddd, DD/MM/YYYY')}
+                          </Text>
+                          <Stack gap="md">
+                            {dayAppointments.map((apt) => (
+                              <Card key={apt.id} withBorder padding="sm" radius="md">
+                                <Group justify="space-between" align="flex-start">
+                                  <div style={{ flex: 1 }}>
+                                    <Group gap="sm" mb="xs">
+                                      <Badge variant="filled" color="blue" size="md">
+                                        {apt.time}
+                                      </Badge>
+                                      <Text size="sm" fw={600}>
+                                        {getPatientName(apt.patientId)}
+                                      </Text>
+                                    </Group>
+                                    {apt.notes && (
+                                      <div style={{ marginTop: '8px', padding: '8px', backgroundColor: 'var(--mantine-color-gray-0)', borderRadius: '6px' }}>
+                                        <Text size="xs" fw={600} c="dimmed" mb={2}>
+                                          Observações:
+                                        </Text>
+                                        <Text size="xs" c="dark" style={{ lineHeight: 1.5 }}>
+                                          {apt.notes}
+                                        </Text>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <Group gap="xs">
+                                    <ActionIcon
+                                      variant="light"
+                                      color="blue"
+                                      size="sm"
+                                      onClick={() => handleEditAppointment(apt)}
+                                    >
+                                      <IconEdit size={14} />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                      variant="light"
+                                      color="red"
+                                      size="sm"
+                                      onClick={() => handleDeleteAppointment(apt.id)}
+                                    >
+                                      <IconTrash size={14} />
+                                    </ActionIcon>
+                                  </Group>
+                                </Group>
+                              </Card>
+                            ))}
+                          </Stack>
+                        </Card>
+                      );
+                      })}
+                    </Stack>
+                  );
+                })()}
               </Paper>
             )}
           </Stack>
